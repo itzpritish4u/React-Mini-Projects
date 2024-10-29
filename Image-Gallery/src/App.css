@@ -1,0 +1,7 @@
+.storedImages {
+    transition: transform ease 0.3s;
+}
+
+.storedImages:hover {
+    transform: scale(1.1);
+}
