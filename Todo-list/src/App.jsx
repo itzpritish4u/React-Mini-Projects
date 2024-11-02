@@ -1,134 +1,90 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
-function TodoList() {
-  const [tasks, setTasks] = useState([]);
-  const [newTask, setNewTask] = useState("");
-  const [isEmptyMessageVisible, setIsEmptyMessageVisible] = useState(true);
+const App = () => {
+  const [input, setInput] = useState("");
+  const [lists, setLists] = useState([]);
+  const [editIndex, setEditIndex] = useState(null);
 
-  const handleAddTask = () => {
-    if (newTask.trim() === "") return;
-
-    setTasks([...tasks, { text: newTask, isEditing: false }]);
-    setNewTask("");
-    setIsEmptyMessageVisible(false);
-  };
-
-  const handleDeleteTask = (index) => {
-    const updatedTasks = tasks.filter((_, i) => i !== index);
-    setTasks(updatedTasks);
-    setIsEmptyMessageVisible(updatedTasks.length === 0);
-  };
-
-  const handleEditTask = (index) => {
-    const updatedTasks = tasks.map((task, i) =>
-      i === index ? { ...task, isEditing: true } : task
-    );
-    setTasks(updatedTasks);
-  };
-
-  const handleSaveTask = (index, editedText) => {
-    const updatedTasks = tasks.map((task, i) =>
-      i === index ? { ...task, text: editedText, isEditing: false } : task
-    );
-    setTasks(updatedTasks);
-  };
-
-  const handleInputChange = (event) => {
-    setNewTask(event.target.value);
-  };
-
-  const handleKeyDown = (event) => {
-    if (event.key === "Enter") {
-      handleAddTask();
+  const handleClick = () => {
+    if (input) {
+      if (editIndex !== null) {
+        const updatedLists = lists.map((list, index) =>
+          editIndex === index ? input : list
+        );
+        setLists(updatedLists);
+        setEditIndex(null);
+      } else {
+        setLists([...lists, input]);
+      }
+      setInput("");
     }
   };
 
-  return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", fontFamily: "Arial, sans-serif" }}>
-      <header>
-        <h1 style={{ marginBottom: "20px" }}>Todo List</h1>
-      </header>
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleClick();
+    }
+  };
 
+  const editLists = (i) => {
+    setInput(lists[i]);
+    setEditIndex(i);
+  };
+
+  const removeInput = () => {
+    setInput("");
+    setEditIndex(null);
+  };
+
+  const deleteList = (i) => {
+    const updatedList = lists.filter((list, index) => index !== i);
+    setLists(updatedList);
+  };
+  return (
+    <div className="container" style={{ margin: "20px" }}>
+      <h1 className="heading">Todo List</h1>
       <input
         type="text"
-        value={newTask}
-        onChange={handleInputChange}
+        name="todo"
+        id="todo-input"
+        style={{ width: "60%", border: "1px solid", height: "40px" }}
+        placeholder="Enter your todo"
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyDown}
-        placeholder="Add a task"
-        style={{
-          padding: "10px",
-          fontSize: "1rem",
-          width: "80%",
-          marginBottom: "20px",
-          borderRadius: "5px",
-          border: "1px solid #ccc",
-        }}
       />
-
-      {isEmptyMessageVisible && (
-        <div style={{ fontSize: "1.5rem", color: "gray", margin: "1rem" }}>Ooops! List is empty</div>
-      )}
-
-      <ul style={{ listStyleType: "none", padding: 0, width: "80%" }}>
-        {tasks.map((task, index) => (
-          <li
-            key={index}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: "10px",
-              padding: "10px",
-              backgroundColor: "#f9f9f9",
-              borderRadius: "5px",
-              border: "1px solid #ddd",
-            }}
-          >
-            {task.isEditing ? (
-              <input
-                type="text"
-                defaultValue={task.text}
-                onBlur={(e) => handleSaveTask(index, e.target.value)}
-                autoFocus
-                style={{
-                  flex: "1",
-                  padding: "5px",
-                  fontSize: "1rem",
-                  borderRadius: "5px",
-                  border: "1px solid #ccc",
-                }}
-              />
-            ) : (
-              <span style={{ flex: "1", fontSize: "1.1rem" }}>{task.text}</span>
-            )}
-            <div style={{ display: "flex", gap: "10px" }}>
-              {!task.isEditing ? (
-                <img
-                  src="https://cdn-icons-png.flaticon.com/256/588/588395.png"
-                  alt="Edit"
-                  onClick={() => handleEditTask(index)}
-                  style={{ cursor: "pointer", width: "20px", height: "20px" }}
-                />
-              ) : (
-                <img
-                  src="https://cdn-icons-png.flaticon.com/256/3106/3106887.png"
-                  alt="Save"
-                  onClick={() => handleSaveTask(index, task.text)}
-                  style={{ cursor: "pointer", width: "20px", height: "20px" }}
-                />
-              )}
-              <img
-                src="https://cdn-icons-png.flaticon.com/256/484/484560.png"
-                alt="Delete"
-                onClick={() => handleDeleteTask(index)}
-                style={{ cursor: "pointer", width: "20px", height: "20px" }}
-              />
-            </div>
+      <div>
+        <button style={{ border: "1px solid" }} onClick={handleClick}>
+          Submit
+        </button>
+        <button
+          style={{ border: "1px solid", margin: "2px" }}
+          onClick={removeInput}
+        >
+          Cancel
+        </button>
+      </div>
+      <ul>
+        {lists.map((list, i) => (
+          <li key={i}>
+            {list}
+            <button
+              style={{ border: "1px solid", margin: "2px" }}
+              onClick={() => editLists(i)}
+            >
+              Edit
+            </button>
+            <button
+              style={{ border: "1px solid", margin: "2px" }}
+              onClick={() => deleteList(i)}
+            >
+              Delete
+            </button>
           </li>
         ))}
       </ul>
     </div>
   );
-}
+};
 
-export default TodoList;
+export default App;

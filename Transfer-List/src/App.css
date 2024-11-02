@@ -1,0 +1,58 @@
+/* Container styles */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Header styles */
+.header {
+  height: 4rem;
+  justify-self: center;
+  width: 100%;
+  padding: 2rem;
+  font-size: 3rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: center;
+}
+
+/* Body container styles */
+.body-container {
+  width: 40rem;
+  height: 25rem;
+  display: flex;
+  justify-content: space-between;
+  margin: 3rem;
+}
+
+/* Left and Right container styles */
+.left-container,
+.right-container {
+  width: 16rem;
+  border: 2px solid;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  font-size: 1.3rem;
+}
+
+/* Checkbox margin */
+.checkbox {
+  margin: 0.8rem;
+}
+
+/* Button container styles */
+.buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* Button styles */
+.button {
+  width: 5.5rem;
+  height: 3rem;
+  font-size: 1.5rem;
+}

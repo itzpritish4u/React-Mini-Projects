@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./App.css";
 
 const App = () => {
   const [leftCountries, setLeftCountries] = useState([
@@ -12,111 +13,44 @@ const App = () => {
   const [rightCountries, setRightCountries] = useState([]);
 
   const toggleCheckbox = (id, list, setList) => {
-    const updatedList = [];
-    for (let item of list) {
-      if (item.id === id) {
-        updatedList.push({ ...item, checked: !item.checked });
-      } else {
-        updatedList.push(item);
-      }
-    }
+    const updatedList = list.map((item) =>
+      item.id === id ? { ...item, checked: !item.checked } : item
+    );
     setList(updatedList);
   };
 
   const moveAllRight = () => {
-    const newRightCountries = [...rightCountries];
-    for (let country of leftCountries) {
-      newRightCountries.push({ ...country, checked: false });
-    }
-    setRightCountries(newRightCountries);
+    setRightCountries(rightCountries.concat(leftCountries.map(country => ({ ...country, checked: false }))));
     setLeftCountries([]);
   };
 
   const moveSelectedRight = () => {
-    const newRightCountries = [...rightCountries];
-    const newLeftCountries = [];
-
-    for (let country of leftCountries) {
-      if (country.checked) {
-        newRightCountries.push({ ...country, checked: false });
-      } else {
-        newLeftCountries.push(country);
-      }
-    }
-
-    setRightCountries(newRightCountries);
-    setLeftCountries(newLeftCountries);
+    setRightCountries(rightCountries.concat(leftCountries.filter(country => country.checked).map(country => ({ ...country, checked: false }))));
+    setLeftCountries(leftCountries.filter(country => !country.checked));
   };
 
   const moveSelectedLeft = () => {
-    const newLeftCountries = [...leftCountries];
-    const newRightCountries = [];
-
-    for (let country of rightCountries) {
-      if (country.checked) {
-        newLeftCountries.push({ ...country, checked: false });
-      } else {
-        newRightCountries.push(country);
-      }
-    }
-
-    setLeftCountries(newLeftCountries);
-    setRightCountries(newRightCountries);
+    setLeftCountries(leftCountries.concat(rightCountries.filter(country => country.checked).map(country => ({ ...country, checked: false }))));
+    setRightCountries(rightCountries.filter(country => !country.checked));
   };
 
   const moveAllLeft = () => {
-    const newLeftCountries = [...leftCountries];
-    for (let country of rightCountries) {
-      newLeftCountries.push({ ...country, checked: false });
-    }
-    setLeftCountries(newLeftCountries);
+    setLeftCountries(leftCountries.concat(rightCountries.map(country => ({ ...country, checked: false }))));
     setRightCountries([]);
   };
 
   return (
-    <div
-      className="container"
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-    >
-      <header
-        className="header"
-        style={{
-          height: "4rem",
-          justifySelf: "center",
-          width: "100%",
-          padding: "2rem",
-          fontSize: "3rem",
-          boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.15)",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
+    <div className="container">
+      <header className="header">
         <div className="text">Transfer List</div>
       </header>
 
-      <div
-        className="body-container"
-        style={{
-          width: "40rem",
-          height: "25rem",
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-      >
-        <div
-          className="left-container"
-          style={{
-            width: "16rem",
-            border: "2px solid",
-            padding: "0.5rem",
-            display: "flex",
-            flexDirection: "column",
-            fontSize: "1.3rem",
-          }}
-        >
+      <div className="body-container">
+        <div className="left-container">
           {leftCountries.map((countryDetails) => (
-            <label key={countryDetails.id} htmlFor={countryDetails.id}>
+            <label htmlFor={countryDetails.id}>
               <input
+                key={countryDetails.id}
                 type="checkbox"
                 checked={countryDetails.checked}
                 onChange={() =>
@@ -126,59 +60,21 @@ const App = () => {
                     setLeftCountries
                   )
                 }
-                style={{ margin: "0.8rem" }}
+                className="checkbox"
               />
               {countryDetails.country}
             </label>
           ))}
         </div>
 
-        <div
-          className="buttons"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            gap: "1rem",
-          }}
-        >
-          <button
-            onClick={moveAllRight}
-            style={{ width: "5.5rem", height: "3rem", fontSize: "1.5rem" }}
-          >
-            {">>"}
-          </button>
-          <button
-            onClick={moveSelectedRight}
-            style={{ width: "5.5rem", height: "3rem", fontSize: "1.5rem" }}
-          >
-            {">"}
-          </button>
-          <button
-            onClick={moveSelectedLeft}
-            style={{ width: "5.5rem", height: "3rem", fontSize: "1.5rem" }}
-          >
-            {"<"}
-          </button>
-          <button
-            onClick={moveAllLeft}
-            style={{ width: "5.5rem", height: "3rem", fontSize: "1.5rem" }}
-          >
-            {"<<"}
-          </button>
+        <div className="buttons">
+          <button onClick={moveAllRight} className="button">{">>"}</button>
+          <button onClick={moveSelectedRight} className="button">{">"}</button>
+          <button onClick={moveSelectedLeft} className="button">{"<"}</button>
+          <button onClick={moveAllLeft} className="button">{"<<"}</button>
         </div>
 
-        <div
-          className="right-container"
-          style={{
-            width: "16rem",
-            border: "2px solid",
-            padding: "0.5rem",
-            display: "flex",
-            flexDirection: "column",
-            fontSize: "1.3rem",
-          }}
-        >
+        <div className="right-container">
           {rightCountries.map((countryDetails) => (
             <label key={countryDetails.id} htmlFor={countryDetails.id}>
               <input
@@ -191,7 +87,7 @@ const App = () => {
                     setRightCountries
                   )
                 }
-                style={{ margin: "0.8rem" }}
+                className="checkbox"
               />
               {countryDetails.country}
             </label>

@@ -46,11 +46,14 @@
 }
 
 .button:hover {
-    background-color: rgb(129, 128, 128);
-    color: black;
+  background-color: rgb(129, 128, 128);
+  color: black;
 }
 
-.clear, .delete, .negate, .operator {
+.clear,
+.delete,
+.negate,
+.operator {
   background-color: #eb6440;
   color: white;
 }
@@ -61,6 +64,6 @@
 }
 
 .equals {
-    background-color: #eb6440;
-    color: white;
+  background-color: #eb6440;
+  color: white;
 }

@@ -50,7 +50,7 @@ const Calculator = () => {
 
   const handleEqualsButton = () => {
     if (operator && operand !== null && display) {
-      const result = evaluate(operand, parseFloat(display), operator);
+      const result = evaluate(parseFloat(operand), parseFloat(display), operator);
       setDisplay(result.toString());    // Show the result
       setOperator(null);                // Reset operator and operand
       setOperand(null);

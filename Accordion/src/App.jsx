@@ -1,72 +1,72 @@
-import { useState } from "react";
-import Accordion from "./components/Accordion";
+import React, { useState } from "react";
 
 const questions = [
   {
     id: 1,
     title: "Do I have to allow the use of cookies?",
-    info: "Unicorn vinyl poutine brooklyn, next level direct trade iceland. Shaman copper mug church-key coloring book, whatever poutine normcore fixie cred kickstarter post-ironic street art.",
+    info: "Unicorn vinyl poutine brooklyn, next level direct trade iceland.",
   },
   {
     id: 2,
     title: "How do I change my My Page password?",
-    info: "Coloring book forage photo booth gentrify lumbersexual. Migas chillwave poutine synth shoreditch, enamel pin thundercats fashion axe roof party polaroid chartreuse.",
+    info: "Coloring book forage photo booth gentrify lumbersexual.",
   },
   {
     id: 3,
     title: "What is BankID?",
-    info: "Enamel pin fam sustainable woke whatever venmo. Authentic asymmetrical put a bird on it, lumbersexual activated charcoal kinfolk banjo cred pickled sartorial.",
+    info: "Enamel pin fam sustainable woke whatever venmo.",
   },
   {
     id: 4,
     title: "Whose birth number can I use?",
-    info: "Edison bulb direct trade gentrify beard lo-fi seitan sustainable roof party franzen occupy squid. Knausgaard cronut succulents, scenester readymade shabby chic lyft. Copper mug meh vegan gentrify.",
+    info: "Edison bulb direct trade gentrify beard lo-fi seitan.",
   },
   {
     id: 5,
-    title: "When do I recieve a password ordered by letter?",
-    info: "Locavore franzen fashion axe live-edge neutra irony synth af tilde shabby chic man braid chillwave waistcoat copper mug messenger bag. Banjo snackwave blog, microdosing thundercats migas vaporware viral lo-fi seitan ",
+    title: "When do I receive a password ordered by letter?",
+    info: "Locavore franzen fashion axe live-edge neutra irony synth.",
   },
 ];
 
-
 function App() {
   const [multiple, setMultiple] = useState(true);
-  const [questionId, setQuestionId] = useState([]);
+  const [expandedIds, setExpandedIds] = useState([]);
 
-  function handleClick() {
-    if (multiple) {
-      questionId.map((curr) => {
-        curr((prev) => !prev);
-      });
-      setQuestionId([]);
+  const handleAccordionClick = (id) => {
+    if (expandedIds.includes(id)) {
+      setExpandedIds(expandedIds.filter((currId) => currId !== id));
+    } else {
+      setExpandedIds(multiple ? [...expandedIds, id] : [id]);
     }
-    setMultiple(!multiple);
-  }
+  };
+
+  const handleToggleMultiple = () => {
+    setMultiple((prev) => !prev);
+    if (!multiple) setExpandedIds([]); // Close all if switching to single mode
+  };
 
   return (
     <>
       <h1>Accordion</h1>
       <div>
-        <label htmlFor="checkbox">Is multiple open accordion allowed?</label>
+        <label htmlFor="multiple-toggle">Allow multiple open sections?</label>
         <input
           type="checkbox"
-          name=""
-          id="checkbox"
+          id="multiple-toggle"
           checked={multiple}
-          onChange={() => handleClick()}
+          onChange={handleToggleMultiple}
         />
       </div>
 
       <div>
-        {questions.map((question) => (
-          <Accordion
-            key={question.id}
-            questionId={questionId}
-            setQuestionId={setQuestionId}
-            multiple={multiple}
-            {...question}
-          />
+        {questions.map(({ id, title, info }) => (
+          <div key={id} style={{ border: "1px solid", margin: "4px 0" }}>
+            <p>{title}</p>
+            <button onClick={() => handleAccordionClick(id)}>
+              {expandedIds.includes(id) ? "-" : "+"}
+            </button>
+            {expandedIds.includes(id) && <p>{info}</p>}
+          </div>
         ))}
       </div>
     </>
