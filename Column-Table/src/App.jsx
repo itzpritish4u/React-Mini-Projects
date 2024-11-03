@@ -14,7 +14,7 @@ const App = () => {
       style={{ marginTop: "2rem", display: "flex", justifyContent: "center", alignItems:'center', flexDirection: 'column'}}
     >
       <div className="controls" style={{ display: "flex", margin: '1rem'}}>
-        <label>
+        <label style={{margin: '1rem'}}>
           Rows: {rows}
           <input
             type="range"
@@ -24,7 +24,7 @@ const App = () => {
             onChange={(event) => setRows(parseInt(event.target.value))}
           />
         </label>
-        <label>
+        <label style={{margin: '1rem'}}>
           Columns: {cols}
           <input
             type="range"
