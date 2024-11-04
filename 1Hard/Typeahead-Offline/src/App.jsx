@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 
-// Sample list of countries
 const countries = [
   "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Argentina", "Armenia", 
   "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", 
@@ -38,8 +37,8 @@ const App = () => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(-1);
 
-  // Filter country list based on query
   useEffect(() => {
     const fetchSuggestions = () => {
       if (query.length > 0) {
@@ -56,16 +55,30 @@ const App = () => {
 
     const delayDebounce = setTimeout(() => {
       fetchSuggestions();
-    }, 300); // Debounce API call by 300ms
+    }, 300);
 
     return () => clearTimeout(delayDebounce);
   }, [query]);
 
-  // Handle clicking on a suggestion
   const handleClick = (country) => {
     setQuery(country);
     setSuggestions([]);
     setShowSuggestions(false);
+    setActiveIndex(-1);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "ArrowDown") {
+      setActiveIndex((prevIndex) => 
+        prevIndex < suggestions.length - 1 ? prevIndex + 1 : 0
+      );
+    } else if (e.key === "ArrowUp") {
+      setActiveIndex((prevIndex) => 
+        prevIndex > 0 ? prevIndex - 1 : suggestions.length - 1
+      );
+    } else if (e.key === "Enter" && activeIndex >= 0) {
+      handleClick(suggestions[activeIndex]);
+    }
   };
 
   return (
@@ -75,16 +88,22 @@ const App = () => {
         placeholder="Search country..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
+        onKeyDown={handleKeyDown}
         style={{ width: "100%", padding: "10px", fontSize: "16px" }}
       />
       {showSuggestions && query && (
         <ul className="suggestions" style={{ listStyleType: "none", padding: 0, marginTop: "10px", border: "1px solid #ccc", borderRadius: "4px", backgroundColor: "#f9f9f9" }}>
           {suggestions.length ? (
-            suggestions.map((country) => (
+            suggestions.map((country, index) => (
               <li
                 key={country}
                 onClick={() => handleClick(country)}
-                style={{ padding: "10px", cursor: "pointer", borderBottom: "1px solid #eee" }}
+                style={{
+                  padding: "10px",
+                  cursor: "pointer",
+                  backgroundColor: activeIndex === index ? "#d3d3d3" : "#f9f9f9",
+                  borderBottom: "1px solid #eee"
+                }}
               >
                 {country}
               </li>

@@ -5,9 +5,9 @@ const App = () => {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(-1); // Track selected index for navigation
+  const [selectedIndex, setSelectedIndex] = useState(-1);
 
-  const GITHUB_TOKEN = "YOUR_GITHUB_TOKEN"; // Replace with your GitHub token
+  const GITHUB_TOKEN = "YOUR_GITHUB_TOKEN";
 
   useEffect(() => {
     const fetchSuggestions = async () => {
@@ -20,7 +20,7 @@ const App = () => {
           });
           setSuggestions(response.data.items || []);
           setShowSuggestions(true);
-          setSelectedIndex(-1); // Reset index when new suggestions are loaded
+          setSelectedIndex(-1);
         } catch (error) {
           console.error("Error fetching suggestions:", error);
         }
@@ -32,7 +32,7 @@ const App = () => {
 
     const delayDebounce = setTimeout(() => {
       fetchSuggestions();
-    }, 300); // Debounce API call by 300ms
+    }, 300);
 
     return () => clearTimeout(delayDebounce);
   }, [query]);
