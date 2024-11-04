@@ -15,7 +15,7 @@ function App() {
     const stepValue = parseInt(event.target.value);
     if (!isNaN(stepValue)) {
       setStep(stepValue);
-    } 
+    }
   }
 
   return (

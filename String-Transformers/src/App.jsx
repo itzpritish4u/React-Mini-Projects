@@ -4,8 +4,6 @@ const App = () => {
   const [userInput, setUserInput] = useState("");
   let [formedText, setFormedText] = useState("");
 
-  const words = userInput.trim().split(" ");
-
   const changeToLowerCase = () => {
     setFormedText(userInput.toLowerCase());
   };
@@ -13,6 +11,8 @@ const App = () => {
   const changeToUpperCase = () => {
     setFormedText(userInput.toUpperCase());
   };
+
+  const words = userInput.trim().split(" ");
 
   const changeToCamelCase = () => {
     let formed = words[0].toLowerCase();

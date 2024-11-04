@@ -7,7 +7,7 @@ const maxDelay = 3;
 const minLimit = -1000;
 const maxLimit = 1000;
 
-function AdvancedCounter() {
+function App() {
   const [value, setValue] = useState(0);
   const [step, setStep] = useState(1);
   const [delay, setDelay] = useState(1);
@@ -82,7 +82,7 @@ function AdvancedCounter() {
           value={delay}
           onChange={(e) => setDelay(Number(e.target.value))}
         />
-        <output>{delay}s</output>
+        <output>{delay}</output>
       </section>
 
       {/* Step Control */}
@@ -142,4 +142,4 @@ function AdvancedCounter() {
   );
 }
 
-export default AdvancedCounter;
+export default App;
