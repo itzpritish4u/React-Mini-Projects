@@ -61,11 +61,6 @@ const App = () => {
     return () => clearTimeout(delayDebounce);
   }, [query]);
 
-  // Handle input change
-  const handleChange = (e) => {
-    setQuery(e.target.value);
-  };
-
   // Handle clicking on a suggestion
   const handleClick = (country) => {
     setQuery(country);
@@ -79,7 +74,7 @@ const App = () => {
         type="text"
         placeholder="Search country..."
         value={query}
-        onChange={handleChange}
+        onChange={(e) => setQuery(e.target.value)}
         style={{ width: "100%", padding: "10px", fontSize: "16px" }}
       />
       {showSuggestions && query && (

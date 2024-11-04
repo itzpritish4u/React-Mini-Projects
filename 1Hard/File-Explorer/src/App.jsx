@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './App.css'; // Make sure to add this line to import the CSS file
 
 const initialData = [
   {
@@ -59,7 +60,7 @@ const initialData = [
 
 const FileTree = ({ data, onAdd, onEdit, onDelete }) => {
   const [expandedFolders, setExpandedFolders] = useState({});
-  const [editItem, setEditItem] = useState(null);
+  const [editItemName, setEditItemName] = useState(null); // Track the name of the item being edited
   const [newItem, setNewItem] = useState(null);
 
   const toggleFolder = (name) => {
@@ -67,7 +68,7 @@ const FileTree = ({ data, onAdd, onEdit, onDelete }) => {
   };
 
   const handleEdit = (item) => {
-    setEditItem(item);
+    setEditItemName(item.name); // Set the name of the item being edited
   };
 
   const handleAdd = (parent, type) => {
@@ -79,41 +80,38 @@ const FileTree = ({ data, onAdd, onEdit, onDelete }) => {
   };
 
   const handleEditChange = (e) => {
-    setEditItem((prev) => ({ ...prev, name: e.target.value }));
-  };
-
-  const handleNewChange = (e) => {
-    setNewItem((prev) => ({ ...prev, name: e.target.value }));
+    setEditItemName(e.target.value);
   };
 
   const renderTree = (node, parent) => {
     return (
-      <div key={node.name} style={{ marginLeft: 20, position: 'relative' }}>
+      <div key={node.name} className="file-tree-item">
         {node.type === 'folder' ? (
           <>
             <div
               onClick={() => toggleFolder(node.name)}
               style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+              className="file-folder"
             >
               {expandedFolders[node.name] ? '📂' : '📁'}{' '}
-              {editItem && editItem === node ? (
+              {editItemName === node.name ? ( // Check by name for edit mode
                 <input
-                  value={editItem.name}
+                  value={editItemName}
                   onChange={handleEditChange}
                   onBlur={() => {
-                    onEdit(node, editItem.name);
-                    setEditItem(null);
+                    onEdit(node, editItemName); // Commit edit on blur
+                    setEditItemName(null);
                   }}
                   autoFocus
                 />
               ) : (
                 <>
                   {node.name}
-                  <div style={{ marginLeft: '10px', display: 'flex', gap: '5px' }}>
-                    <span role="img" aria-label="edit" onClick={() => handleEdit(node)} style={{ cursor: 'pointer' }}>✏️</span>
-                    <span role="img" aria-label="add-file" onClick={() => handleAdd(node, 'file')} style={{ cursor: 'pointer' }}>📄</span>
-                    <span role="img" aria-label="add-folder" onClick={() => handleAdd(node, 'folder')} style={{ cursor: 'pointer' }}>📁</span>
-                    <span role="img" aria-label="delete" onClick={() => handleDelete(node)} style={{ cursor: 'pointer' }}>🗑️</span>
+                  <div className="icon-container">
+                    <span role="img" aria-label="edit" onClick={(e) => { e.stopPropagation(); handleEdit(node); }}>✏️</span>
+                    <span role="img" aria-label="add-file" onClick={(e) => { e.stopPropagation(); handleAdd(node, 'file'); }}>📄</span>
+                    <span role="img" aria-label="add-folder" onClick={(e) => { e.stopPropagation(); handleAdd(node, 'folder'); }}>📁</span>
+                    <span role="img" aria-label="delete" onClick={(e) => { e.stopPropagation(); handleDelete(node); }}>🗑️</span>
                   </div>
                 </>
               )}
@@ -126,7 +124,7 @@ const FileTree = ({ data, onAdd, onEdit, onDelete }) => {
                   <div>
                     <input
                       value={newItem.name}
-                      onChange={handleNewChange}
+                      onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
                       onBlur={() => {
                         onAdd(node, newItem);
                         setNewItem(null);
@@ -140,23 +138,23 @@ const FileTree = ({ data, onAdd, onEdit, onDelete }) => {
             )}
           </>
         ) : (
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            {editItem && editItem === node ? (
+          <div className="file-folder" style={{ display: 'flex', alignItems: 'center' }}>
+            {editItemName === node.name ? (
               <input
-                value={editItem.name}
+                value={editItemName}
                 onChange={handleEditChange}
                 onBlur={() => {
-                  onEdit(node, editItem.name);
-                  setEditItem(null);
+                  onEdit(node, editItemName);
+                  setEditItemName(null);
                 }}
                 autoFocus
               />
             ) : (
               <>
                 📄 {node.name}
-                <div style={{ marginLeft: '10px', display: 'flex', gap: '5px' }}>
-                  <span role="img" aria-label="edit" onClick={() => handleEdit(node)} style={{ cursor: 'pointer' }}>✏️</span>
-                  <span role="img" aria-label="delete" onClick={() => handleDelete(node)} style={{ cursor: 'pointer' }}>🗑️</span>
+                <div className="icon-container">
+                  <span role="img" aria-label="edit" onClick={() => handleEdit(node)}>✏️</span>
+                  <span role="img" aria-label="delete" onClick={() => handleDelete(node)}>🗑️</span>
                 </div>
               </>
             )}
@@ -168,6 +166,7 @@ const FileTree = ({ data, onAdd, onEdit, onDelete }) => {
 
   return <div>{data.map((item) => renderTree(item, null))}</div>;
 };
+
 
 const App = () => {
   const [data, setData] = useState(initialData);

@@ -1,0 +1,18 @@
+.file-folder {
+  position: relative;
+}
+
+.icon-container {
+  display: none;
+  margin-left: 10px;
+  display: flex;
+  gap: 5px;
+}
+
+.file-folder:hover .icon-container {
+  display: inline-flex;
+}
+
+.icon-container span {
+  cursor: pointer;
+}
