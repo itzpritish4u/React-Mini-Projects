@@ -1,108 +1,94 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import Comments from "./Components/Comments";
+
+const commentData = [
+  {
+    id: "1",
+    text: "Hello world! How are you?",
+    replies: [
+      {
+        id: "2",
+        text: "Hey, I am fine, wau?",
+        replies: [],
+      },
+    ],
+  },
+];
 
 const App = () => {
-  const [comments, setComments] = useState([
-    {
-      id: 1,
-      text: 'Hello world! How are you?',
-      replies: [
-        {
-          id: 2,
-          text: 'Hey, I am fine, wau?',
-          replies: [],
-        },
-      ],
-    },
-  ]);
-  const [newComment, setNewComment] = useState('');
-  const [replyText, setReplyText] = useState('');
-  const [replyingTo, setReplyingTo] = useState(null);
+  const [comments, setComments] = useState(commentData);
+  const [userInput, setUserInput] = useState("");
 
   const addComment = () => {
-    if (newComment.trim()) {
-      setComments([...comments, { id: Date.now(), text: newComment, replies: [] }]);
-      setNewComment('');
+    if (userInput.trim()) {
+      const newComment = {
+        id: Date.now().toString(),
+        text: userInput,
+        replies: [],
+      };
+      setComments([...comments, newComment]);
+      setUserInput("");
     }
   };
 
-  const addReply = (commentId) => {
-    if (replyText.trim()) {
-      const updateComments = (comments) => {
-        return comments.map((comment) => {
-          if (comment.id === commentId) {
-            return {
-              ...comment,
-              replies: [
-                ...comment.replies,
-                { id: Date.now(), text: replyText, replies: [] },
-              ],
-            };
-          }
+  const addReply = (commentId, replyText) => {
+    const updateComments = (comments) =>
+      comments.map((comment) => {
+        if (comment.id === commentId) {
           return {
             ...comment,
-            replies: updateComments(comment.replies),
+            replies: [
+              ...comment.replies,
+              { id: Date.now().toString(), text: replyText, replies: [] },
+            ],
           };
-        });
-      };
+        }
+        return {
+          ...comment,
+          replies: updateComments(comment.replies),
+        };
+      });
 
-      setComments(updateComments(comments));
-      setReplyText('');
-      setReplyingTo(null);
-    }
+    setComments(updateComments(comments));
   };
 
-  const deleteComment = (commentId) => {
-    const deleteRecursive = (comments) => {
-      return comments
+  const onDelete = (commentId) => {
+    const deleteComment = (comments) =>
+      comments
         .filter((comment) => comment.id !== commentId)
         .map((comment) => ({
           ...comment,
-          replies: deleteRecursive(comment.replies),
+          replies: deleteComment(comment.replies),
         }));
-    };
-    setComments(deleteRecursive(comments));
-  };
 
-  const renderComments = (comments) => {
-    return comments.map((comment) => (
-      <div key={comment.id} style={{ marginLeft: '20px', padding: '10px', border: '1px solid #ddd', borderRadius: '5px', backgroundColor: '#f9f9f9', marginBottom: '10px' }}>
-        <p>{comment.text}</p>
-        <button onClick={() => setReplyingTo(comment.id)}>Reply</button>
-        <button onClick={() => deleteComment(comment.id)}>Delete</button>
-        {replyingTo === comment.id && (
-          <div style={{ marginTop: '10px' }}>
-            <input
-              type="text"
-              value={replyText}
-              onChange={(e) => setReplyText(e.target.value)}
-              placeholder="Reply..."
-              style={{ marginRight: '5px' }}
-            />
-            <button onClick={() => addReply(comment.id)}>Add</button>
-            <button onClick={() => setReplyingTo(null)}>Cancel</button>
-          </div>
-        )}
-        <div style={{ marginLeft: '20px' }}>{renderComments(comment.replies)}</div>
-      </div>
-    ));
+    setComments(deleteComment(comments));
   };
 
   return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+    <div>
       <h2>Comments</h2>
-      <div style={{ display: 'flex', marginBottom: '10px' }}>
-        <input
-          type="text"
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          placeholder="Add comment..."
-          style={{ flex: 1, marginRight: '5px' }}
-        />
-        <button onClick={addComment}>Add</button>
-      </div>
-      <div>{renderComments(comments)}</div>
+      <input
+        type="text"
+        placeholder="Add Comment..."
+        value={userInput}
+        onChange={(e) => setUserInput(e.target.value)}
+        style={{height: '2rem', width: '10rem'}}
+      />
+      <button
+        style={{
+          margin: "1rem",
+          width: "3rem",
+          backgroundColor: "inherit",
+          border: "1px solid",
+        }}
+        onClick={addComment}
+      >
+        Add
+      </button>
+      <Comments comments={comments} addReply={addReply} onDelete={onDelete} />
     </div>
   );
 };
 
 export default App;
+
